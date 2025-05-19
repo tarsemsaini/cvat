@@ -57,7 +57,6 @@ export default function TopBarComponent(props: VisibleTopBarProps): JSX.Element 
     const handleCreateFrom = (date: Date | null): void => {
         if (!date) {
             setIsFromDate(null);
-            setIsToDate(null);
             onDateToChange(null, null);
             return;
         }
@@ -72,7 +71,6 @@ export default function TopBarComponent(props: VisibleTopBarProps): JSX.Element 
 
     const handleCreateTo = (date: Date | null): void => {
         if (!date) {
-            setIsFromDate(null);
             setIsToDate(null);
             onDateToChange(null, null);
             return;
