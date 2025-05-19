@@ -103,6 +103,16 @@ export const config: Partial<Config> = {
             valueSources: ['value'],
             operators: ['like'],
         },
+        created_from: {
+            label: 'Created from',
+            type: 'datetime',
+            operators: ['greater', 'greater_or_equal'],
+        },
+        created_to: {
+            label: 'Created to',
+            type: 'datetime',
+            operators: ['less', 'less_or_equal'],
+        },
     },
 };
 

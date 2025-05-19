@@ -6,7 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
-
+import DatePicker from 'antd/lib/date-picker';
 import { Row, Col } from 'antd/lib/grid';
 import Popover from 'antd/lib/popover';
 import { LoadingOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
@@ -33,14 +33,18 @@ interface VisibleTopBarProps {
     onApplySearch(search: string | null): void;
     query: TasksQuery;
     importing: boolean;
+    // onDateFromChange(date: string | null): void;
+    onDateToChange(date: string | null, fromDate: string | null): void;
 }
 
 export default function TopBarComponent(props: VisibleTopBarProps): JSX.Element {
     const dispatch = useDispatch();
     const {
-        importing, query, onApplyFilter, onApplySorting, onApplySearch,
+        importing, query, onApplyFilter, onApplySorting, onApplySearch, onDateToChange,
     } = props;
     const [visibility, setVisibility] = useState(defaultVisibility);
+    const [isFromDate, setIsFromDate] = useState<string | null>(null);
+    const [isToDate, setIsToDate] = useState<string | null>(null);
     const history = useHistory();
     const prevImporting = usePrevious(importing);
 
@@ -49,6 +53,39 @@ export default function TopBarComponent(props: VisibleTopBarProps): JSX.Element 
             onApplyFilter(query.filter);
         }
     }, [importing]);
+
+    const handleCreateFrom = (date: Date | null): void => {
+        if (!date) {
+            setIsFromDate(null);
+            setIsToDate(null);
+            onDateToChange(null, null);
+            return;
+        }
+
+        const fromDate = date.toISOString();
+        setIsFromDate(fromDate);
+
+        if (isToDate) {
+            onDateToChange(isToDate, fromDate);
+        }
+    };
+
+    const handleCreateTo = (date: Date | null): void => {
+        if (!date) {
+            setIsFromDate(null);
+            setIsToDate(null);
+            onDateToChange(null, null);
+            return;
+        }
+
+        const toDate = date.toISOString();
+        setIsToDate(toDate);
+
+        if (isFromDate) {
+            onDateToChange(toDate, isFromDate);
+        }
+    };
+
 
     return (
         <Row className='cvat-tasks-page-top-bar' justify='center' align='middle'>
@@ -63,6 +100,22 @@ export default function TopBarComponent(props: VisibleTopBarProps): JSX.Element 
                         className='cvat-tasks-page-search-bar'
                         placeholder='Search ...'
                     />
+                    <div className='cvat-tasks-page-date-pickers'>
+                        <DatePicker
+                            placeholder='Created from'
+                            onChange={(date) => handleCreateFrom(date ? date.toDate() : null)}
+                            allowClear
+                            className='cvat-tasks-page-date-from'
+                        />
+
+                        <DatePicker
+                            placeholder='Created to'
+                            onChange={(date) => handleCreateTo(date ? date.toDate() : null)}
+                            allowClear
+                            className='cvat-tasks-page-date-to'
+                        />
+
+                    </div>
                     <div>
                         <SortingComponent
                             visible={visibility.sorting}

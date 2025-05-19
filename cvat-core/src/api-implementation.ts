@@ -245,12 +245,14 @@ export default function implementAPI(cvat: CVATCore): CVATCore {
             search: isString,
             filter: isString,
             ordering: isString,
+            created_from:isString,
+            created_to:isString
         });
 
         checkExclusiveFields(filter, ['id'], ['page']);
         const searchParams = {};
         for (const key of Object.keys(filter)) {
-            if (['page', 'id', 'sort', 'search', 'filter', 'ordering'].includes(key)) {
+            if (['page', 'id', 'sort', 'search', 'filter', 'ordering','created_from','created_to'].includes(key)) {
                 searchParams[key] = filter[key];
             }
         }

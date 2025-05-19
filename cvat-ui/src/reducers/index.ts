@@ -74,6 +74,8 @@ export interface TasksQuery {
     filter: string | null;
     sort: string | null;
     projectId: number | null;
+    created_from: string | null;
+    created_to: string | null;
 }
 
 export interface JobsQuery {

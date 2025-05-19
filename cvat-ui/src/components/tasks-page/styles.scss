@@ -38,6 +38,16 @@
                     width: $grid-unit-size * 32;
                     padding-left: $grid-unit-size;
                 }
+
+                .cvat-tasks-page-date-pickers {
+                    display: flex;
+                    gap: $grid-unit-size;
+
+                    .cvat-tasks-page-date-from,
+                    .cvat-tasks-page-date-to {
+                        width: $grid-unit-size * 16;
+                    }
+                }
             }
         }
     }

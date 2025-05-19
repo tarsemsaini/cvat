@@ -82,7 +82,8 @@ export interface SerializedProject {
     status: ProjectStatus;
 }
 
-export type TasksFilter = ProjectsFilter & { ordering?: string; }; // TODO: Need to clarify how "ordering" is used
+export type TasksFilter = ProjectsFilter & { ordering?: string; created_from?: string;
+    created_to?: string;}; // TODO: Need to clarify how "ordering" is used
 export type JobsFilter = ProjectsFilter & {
     task_id?: number;
     type?: JobType;

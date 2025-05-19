@@ -864,6 +864,12 @@ class _JobDataGetter(_DataGetter):
 @extend_schema_view(
     list=extend_schema(
         summary='List tasks',
+        parameters=[
+            OpenApiParameter('created_from', description='Filter tasks created after this date',
+                location=OpenApiParameter.QUERY, type=OpenApiTypes.DATETIME, required=False),
+            OpenApiParameter('created_to', description='Filter tasks created before this date',
+                location=OpenApiParameter.QUERY, type=OpenApiTypes.DATETIME, required=False),
+        ],
         responses={
             '200': TaskReadSerializer(many=True),
         }),
@@ -952,6 +958,28 @@ class TaskViewSet(viewsets.GenericViewSet, mixins.ListModelMixin,
         if self.action == 'list':
             perm = TaskPermission.create_scope_list(self.request)
             queryset = perm.filter(queryset)
+                 # Filter by date range if specified
+            created_from = self.request.query_params.get('created_from')
+            created_to = self.request.query_params.get('created_to')
+
+            if created_to or created_from:
+
+                if not created_from or not created_to:
+                    raise ValidationError("Both 'created_from' and 'created_to' must be provided together.")
+
+                if created_to and created_from:
+                    try:
+                        created_from_dt = datetime.fromisoformat(created_from.replace('Z', '+00:00'))
+                        created_to_dt = datetime.fromisoformat(created_to.replace('Z', '+00:00'))
+                        if created_from_dt > created_to_dt:
+                            raise ValidationError("'created_from' date cannot be later than 'created_to' date.")
+                    except ValueError:
+                        raise ValidationError("Invalid date format. Use ISO 8601 format (e.g., 2025-05-20T18:30:00.000Z)")
+
+            if created_from:
+                queryset = queryset.filter(created_date__gte=created_from)
+            if created_to:
+                queryset = queryset.filter(created_date__lte=created_to)
             # with_job_summary() is optimized in the serializer
         elif self.action == 'preview':
             queryset = Task.objects.select_related('data')

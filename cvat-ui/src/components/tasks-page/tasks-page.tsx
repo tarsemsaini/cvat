@@ -116,6 +116,25 @@ function TasksPageComponent(props: Props): JSX.Element {
                         }),
                     );
                 }}
+                // onDateFromChange={(date: string | null) => {
+                //     dispatch(
+                //         getTasksAsync({
+                //             ...query,
+                //             created_from: date,
+                //             page: 1,
+                //         }),
+                //     );
+                // }}
+                onDateToChange={(date: string | null,fromDate:string | null) => {
+                    dispatch(
+                        getTasksAsync({
+                            ...query,
+                            created_to: date,
+                            created_from: fromDate,
+                            page: 1,
+                        }),
+                    );
+                }}
                 query={updatedQuery}
                 importing={importing}
             />
